@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="QUIZ CHALLENGE : jeu gratuit de questions pour les classes de 5ème, 4ème et 3ème.">
+<title>QUIZ CHALLENGE</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#172554;background:#eef2ff}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:linear-gradient(135deg,#e0e7ff,#f8fafc)}
+header{background:#172554;color:white;padding:26px 18px;text-align:center}
+header h1{margin:0;font-size:clamp(1.8rem,6vw,3rem);letter-spacing:.04em}
+header p{margin:8px 0 0;color:#c7d2fe}
+main{max-width:760px;margin:24px auto;padding:0 14px 40px}
+.panel{background:white;border-radius:20px;padding:22px;box-shadow:0 8px 28px #17255418;margin:14px 0}
+h2{margin-top:0}.muted{color:#64748b}.classes{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+button{border:0;border-radius:13px;padding:13px 16px;font-weight:700;font-size:1rem;cursor:pointer;background:#2563eb;color:white}
+button:disabled{opacity:.45;cursor:not-allowed}.classbtn{background:#eef2ff;color:#1e3a8a;border:2px solid #c7d2fe;min-height:90px}
+.classbtn:hover,.classbtn:focus{background:#dbeafe;border-color:#2563eb}
+.secondary{background:#e2e8f0;color:#1e293b}.wide{width:100%;margin-top:12px}
+input{width:100%;padding:13px;border:1px solid #cbd5e1;border-radius:12px;font-size:1rem;margin:8px 0 14px}
+.option{display:block;width:100%;text-align:left;background:#f1f5f9;color:#0f172a;margin:9px 0;border:2px solid transparent}
+.option.selected{border-color:#2563eb;background:#dbeafe}
+.option.correct{border-color:#16a34a;background:#dcfce7}.option.wrong{border-color:#dc2626;background:#fee2e2}
+.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.progress{height:9px;background:#e2e8f0;border-radius:20px;overflow:hidden;margin:16px 0}
+.progress span{display:block;height:100%;background:#2563eb;transition:width .2s}
+.score{font-size:2.5rem;font-weight:850;color:#1d4ed8;text-align:center;margin:8px}
+.hidden{display:none!important}li{padding:9px;border-bottom:1px solid #e2e8f0}
+footer{text-align:center;color:#64748b;padding:15px;font-size:.9rem}
+@media(max-width:480px){.classes{grid-template-columns:1fr}.classbtn{min-height:62px}.panel{padding:17px}}
+</style>
+</head>
+<body>
+<header><h1>🏆 QUIZ CHALLENGE</h1><p>Le défi scolaire des champions !</p></header>
+<main>
+<section id="home" class="panel">
+<h2>Bienvenue dans le jeu !</h2>
+<p class="muted">Choisis ta classe, réponds aux 5 questions et essaie d'obtenir les 50 points.</p>
+<label for="player"><b>Ton pseudo</b></label>
+<input id="player" maxlength="18" placeholder="Exemple : Champion12" autocomplete="nickname">
+<h2>Choisis ta classe</h2>
+<div class="classes">
+<button class="classbtn" onclick="startGame('5ème')">📘<br>5ème<br><small>Facile</small></button>
+<button class="classbtn" onclick="startGame('4ème')">📗<br>4ème<br><small>Moyen</small></button>
+<button class="classbtn" onclick="startGame('3ème')">📕<br>3ème<br><small>Défi</small></button>
+</div>
+</section>
+
+<section id="game" class="panel hidden">
+<div class="topline"><b id="gradeLabel"></b><b id="counter"></b><b id="liveScore">0 / 50 pts</b></div>
+<div class="progress"><span id="progressBar" style="width:20%"></span></div>
+<h2 id="question"></h2>
+<div id="answers"></div>
+<p id="feedback" aria-live="polite"></p>
+<button id="next" class="wide" disabled onclick="nextQuestion()">Valider</button>
+<button class="secondary wide" onclick="goHome()">Retour à l'accueil</button>
+</section>
+
+<section id="result" class="panel hidden">
+<h2 style="text-align:center">🎉 Partie terminée !</h2>
+<div class="score" id="finalScore">0 / 50</div>
+<p id="resultMessage" style="text-align:center"></p>
+<button class="wide" onclick="showBoard()">Voir le leaderboard</button>
+<button class="secondary wide" onclick="goHome()">Retour à l'accueil</button>
+</section>
+
+<section id="board" class="panel hidden">
+<h2>🏅 Leaderboard — meilleurs scores</h2>
+<p class="muted">Les scores sont enregistrés sur cet appareil et dans ce navigateur.</p>
+<ol id="ranking"></ol>
+<p id="record" class="muted"></p>
+<button class="secondary wide" onclick="goHome()">Retour à l'accueil</button>
+</section>
+</main>
+<footer>QUIZ CHALLENGE · Jeu gratuit · Amuse-toi et apprends !</footer>
+<script>
+const quizzes={
+"5ème":[
+{q:"Combien font 7 × 8 ?",a:["54","56","64","48"],c:1},
+{q:"Quelle est la capitale politique de la Côte d’Ivoire ?",a:["Abidjan","Yamoussoukro","Bouaké","Daloa"],c:1},
+{q:"Combien de côtés possède un triangle ?",a:["2","3","4","5"],c:1},
+{q:"Quel est le contraire de « grand » ?",a:["Large","Petit","Long","Haut"],c:1},
+{q:"Quelle planète est surnommée la planète rouge ?",a:["Vénus","Mars","Jupiter","Saturne"],c:1}
+],
+"4ème":[
+{q:"Combien font 15 × 12 ?",a:["160","170","180","190"],c:2},
+{q:"Quel est le plus grand océan du monde ?",a:["Atlantique","Indien","Arctique","Pacifique"],c:3},
+{q:"Combien font 3² + 4² ?",a:["12","25","49","14"],c:1},
+{q:"Quel organe permet principalement de respirer ?",a:["Le cœur","Les poumons","L’estomac","Le foie"],c:1},
+{q:"En quelle année a commencé la Première Guerre mondiale ?",a:["1914","1918","1939","1945"],c:0}
+],
+"3ème":[
+{q:"Quelle est la racine carrée de 144 ?",a:["10","11","12","14"],c:2},
+{q:"Quel est le symbole chimique de l’or ?",a:["Ag","Au","Fe","O"],c:1},
+{q:"Quel traité a fondé l’Union européenne sous sa forme actuelle en 1993 ?",a:["Traité de Rome","Traité de Versailles","Traité de Maastricht","Traité de Paris"],c:2},
+{q:"Résous : 2x + 6 = 20.",a:["5","6","7","8"],c:2},
+{q:"Quel gaz est le plus abondant dans l’atmosphère terrestre ?",a:["Oxygène","Azote","Dioxyde de carbone","Hydrogène"],c:1}
+]};
+let grade="",idx=0,score=0,selected=null,locked=false,player="";
+const $=id=>document.getElementById(id);
+function show(id){["home","game","result","board"].forEach(x=>$(x).classList.toggle("hidden",x!==id))}
+function goHome(){show("home")}
+function startGame(g){grade=g;idx=0;score=0;selected=null;locked=false;player=$("player").value.trim()||"Joueur";show("game");render()}
+function render(){
+ const item=quizzes[grade][idx];$("gradeLabel").textContent="Classe : "+grade;$("counter").textContent=`Question ${idx+1}/5`;$("liveScore").textContent=score+" / 50 pts";$("progressBar").style.width=((idx+1)*20)+"%";$("question").textContent=item.q;$("feedback").textContent="";$("next").disabled=true;$("next").textContent="Valider";$("answers").innerHTML="";
+ item.a.forEach((answer,i)=>{const b=document.createElement("button");b.className="option";b.textContent=String.fromCharCode(65+i)+". "+answer;b.onclick=()=>{if(locked)return;selected=i;document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));b.classList.add("selected");$("next").disabled=false};$("answers").appendChild(b)});
+}
+function nextQuestion(){
+ const item=quizzes[grade][idx];
+ if(!locked){if(selected===null)return;locked=true;const opts=[...document.querySelectorAll(".option")];opts[item.c].classList.add("correct");if(selected===item.c){score+=10;$("feedback").textContent="Bravo ! Bonne réponse : +10 points 🎉"}else{opts[selected].classList.add("wrong");$("feedback").textContent="Pas tout à fait. La bonne réponse était : "+item.a[item.c]}$("liveScore").textContent=score+" / 50 pts";$("next").textContent=idx===4?"Terminer":"Question suivante";return}
+ if(idx<4){idx++;selected=null;locked=false;render()}else finish();
+}
+function finish(){
+ const entry={name:player,grade,score,date:new Date().toISOString()};
+ let board=JSON.parse(localStorage.getItem("quizChallengeBoard")||"[]");board.push(entry);board.sort((a,b)=>b.score-a.score);board=board.slice(0,10);localStorage.setItem("quizChallengeBoard",JSON.stringify(board));
+ const best=Math.max(Number(localStorage.getItem("quizChallengeRecord")||0),score);localStorage.setItem("quizChallengeRecord",best);
+ $("finalScore").textContent=score+" / 50";$("resultMessage").textContent=score===50?"Score parfait ! Tu es un champion !":score>=30?"Très bien joué ! Continue comme ça.":"Bien essayé ! Tu peux rejouer pour progresser.";show("result");
+}
+function showBoard(){
+ const board=JSON.parse(localStorage.getItem("quizChallengeBoard")||"[]");$("ranking").innerHTML="";
+ if(!board.length){const li=document.createElement("li");li.textContent="Pas encore de score. Lance la première partie !";$("ranking").appendChild(li)}
+ board.forEach((p,i)=>{const li=document.createElement("li");li.textContent=`${["🥇","🥈","🥉"][i]|| (i+1)+". "} ${p.name} — ${p.grade} — ${p.score}/50`; $("ranking").appendChild(li)});
+ $("record").textContent="Meilleur record sur cet appareil : "+(localStorage.getItem("quizChallengeRecord")||0)+" / 50 points";show("board");
+}
+</script>
+</body>
+</html>
